@@ -1,0 +1,1 @@
+Fix the way that the variable is being passed to checkout
