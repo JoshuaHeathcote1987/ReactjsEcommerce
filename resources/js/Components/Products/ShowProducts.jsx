@@ -17,6 +17,7 @@ export function ShowProducts({ }) {
 
     function handleAddProductToCart(product) {
         let objFound = items.find(object => object.product_id === product.id);
+        
     
         if (objFound === undefined) {
             let obj = {
@@ -25,32 +26,20 @@ export function ShowProducts({ }) {
                 product_id: product.id,
                 amount: 1
             }
+            
             let arr = [...items, obj]
             setItems(arr);
         }
         else
         {
-            let obj = {
-                id: objFound.id,
-                cart_id: objFound.cart_id,
-                product_id: product.id,
-                amount: objFound.amount + 1,
-            }
 
-            console.log(obj)
-            console.log(objFound)
 
+            // There is something wrong without the object is being removed
+            // Maybe you should just access it by id change it and then push it to the setItems
 
             let arr = [...items];
-
-            console.log(arr)
-
-            arr.splice(objFound, 1);
-            arr = [...arr, obj];
-
-            console.log(arr)
-            
-            
+            let arrFound = arr.find(object => object.id === objFound.id);
+            arrFound.amount++;
             setItems(arr);
         }
     }
