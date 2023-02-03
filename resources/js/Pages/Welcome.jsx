@@ -39,14 +39,7 @@ export default function Welcome(props) {
 
             <SecondaryNavbar />
 
-            <div className="container mx-auto py-4 px-2 lg:px-12 xl:px-24 2xl:px-48">
-
-                <CartContext.Provider value={[cart, setCart]}>
-         
-                        <ShowProducts />
-              
-                </CartContext.Provider>
-            </div>
+                <p>Hello world!</p>
 
             <PrimaryFooter />
         </>

@@ -7,7 +7,7 @@ use App\Models\Cart;
 
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\RedirectResponse;
@@ -51,8 +51,7 @@ class ItemController extends Controller
 
         $cart = Cart::where('id', '=', Auth::user()->id)->first();
 
-        $item = Item::where('product_id', '=', $validated['id'])->first();
-
+        $item = Item::where('product_id', '=', $validated['id'])->where('cart_id', '=', $cart->id)->first();
 
         if (!empty($item)) {
             $item->amount++;
@@ -108,6 +107,12 @@ class ItemController extends Controller
      */
     public function destroy(Item $item)
     {
-        //
+   
+    }
+
+    public function delete(Request $request)
+    {
+        $item = Item::where('cart_id', '=', $request->cart_id)->where('product_id', '=', $request->product_id)->first();
+        $item->delete();
     }
 }

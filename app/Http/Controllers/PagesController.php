@@ -37,6 +37,15 @@ class PagesController extends Controller
         ]);
     }
 
+    public function products() {
+        return Inertia::render('Product', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+        ]);
+    }
+
     public function pictures() {
         return 'pictures';
     }

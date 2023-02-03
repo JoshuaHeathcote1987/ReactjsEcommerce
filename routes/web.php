@@ -40,6 +40,8 @@ Route::get('/dashboard/products', function () {
     return Inertia::render('Products')->with(['products' => $products, 'items' => $items, 'cart' => $cart]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::post('/item/delete', [ItemController::class, 'delete'])->name('item.delete');
+
 Route::resources([
     'checkout' => CheckoutController::class,
     'address' => AddressController::class,

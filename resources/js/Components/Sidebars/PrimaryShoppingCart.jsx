@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import Modal from '../Modal'
+import { useForm } from '@inertiajs/inertia-react';
 import { CartContext } from '../Context/CartContext';
 import { ItemContext } from '../Context/ItemContext';
 import { ProductContext } from '../Context/ProductContext';
@@ -11,25 +12,51 @@ export function PrimaryShoppingCart({ }) {
     const [items, setItems] = useContext(ItemContext);
     const [display, setDisplay] = useState();
     const [modalState, setModalState] = useState(false);
+    const [total, setTotal] = useState();
 
     useEffect(() => {
         let arr = [];
-        
+        let calcTotal = 0;
         items.map(item => {
             let find = products.find(object => object.id === item.product_id);
+            let price = find.price * item.amount;
+            let roundedPrice = price.toFixed(2);
             let build = { 
                 id: find.id, 
                 type: find.type, 
                 name: find.name, 
-                price: find.price, 
+                price: roundedPrice,
                 amount: item.amount 
             }
+            calcTotal = calcTotal + (find.price * item.amount);
+            
             arr.push(build);
         });
-
+        let rounded = calcTotal.toFixed(2);
+        setTotal(rounded);
         setDisplay(arr);
-
     }, [items]);
+
+    const { data, setData, post, processing, errors, reset } = useForm({
+        cart_id: '',
+        product_id: '',
+    });
+
+    function handleRemove(product_id) {
+        let find = items.find(object => object.product_id === product_id);
+
+        data.cart_id = find.cart_id;
+        data.product_id = find.product_id;
+
+        setData(data);
+
+        post(route('item.delete', data), {preserveScroll: true});
+
+        let index = items.findIndex((obj) => obj.id === find.id)
+        let arr = [...items];
+        arr.splice(index, 1);
+        setItems(arr);
+    }
 
     const handleCheckout = (e) => {
         e.preventDefault();
@@ -83,7 +110,7 @@ export function PrimaryShoppingCart({ }) {
                             <div className="flex">
                                 <button type="submit" className="hover:animate-pulse basis-2/3 bg-emerald-500 hover:bg-emerald-400 rounded-l p-3 font-bold text-white cursor-pointer">Checkout</button>
                                 <div className="basis-1/3 bg-slate-100 rounded-r text-center p-3 font-bold text-gray-700">
-                                    {/* ${total} */}
+                                    ${total}
                                 </div>
                             </div>
                         </form>

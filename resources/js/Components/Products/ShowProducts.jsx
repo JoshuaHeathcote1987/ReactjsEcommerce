@@ -18,7 +18,6 @@ export function ShowProducts({ }) {
     function handleAddProductToCart(product) {
         let objFound = items.find(object => object.product_id === product.id);
         
-    
         if (objFound === undefined) {
             let obj = {
                 id: items.length + 1,
@@ -32,11 +31,6 @@ export function ShowProducts({ }) {
         }
         else
         {
-
-
-            // There is something wrong without the object is being removed
-            // Maybe you should just access it by id change it and then push it to the setItems
-
             let arr = [...items];
             let arrFound = arr.find(object => object.id === objFound.id);
             arrFound.amount++;
