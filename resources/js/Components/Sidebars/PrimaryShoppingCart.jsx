@@ -4,6 +4,7 @@ import { useForm } from '@inertiajs/inertia-react';
 import { CartContext } from '../Context/CartContext';
 import { ItemContext } from '../Context/ItemContext';
 import { ProductContext } from '../Context/ProductContext';
+import { Inertia } from '@inertiajs/inertia'
 
 export function PrimaryShoppingCart({ }) {
 
@@ -11,25 +12,37 @@ export function PrimaryShoppingCart({ }) {
     const [products, setProducts] = useContext(ProductContext);
     const [items, setItems] = useContext(ItemContext);
     const [display, setDisplay] = useState();
-    const [modalState, setModalState] = useState(false);
     const [total, setTotal] = useState();
+    const [modalState, setModalState] = useState(false);
 
     useEffect(() => {
         let arr = [];
         let calcTotal = 0;
+        let find;
+
+        console.log(products)
+        console.log(items)
+
         items.map(item => {
-            let find = products.find(object => object.id === item.product_id);
+            find = products.find(object => object.id === item.product_id);
+            
+            console.log('find')
+            console.log(find)
+            console.log('item')
+            console.log(items)
+            
+
             let price = find.price * item.amount;
             let roundedPrice = price.toFixed(2);
-            let build = { 
-                id: find.id, 
-                type: find.type, 
-                name: find.name, 
+            let build = {
+                id: find.id,
+                type: find.type,
+                name: find.name,
                 price: roundedPrice,
-                amount: item.amount 
+                amount: item.amount
             }
             calcTotal = calcTotal + (find.price * item.amount);
-            
+
             arr.push(build);
         });
         let rounded = calcTotal.toFixed(2);
@@ -44,13 +57,14 @@ export function PrimaryShoppingCart({ }) {
 
     function handleRemove(product_id) {
         let find = items.find(object => object.product_id === product_id);
+        console.log(find);
 
         data.cart_id = find.cart_id;
         data.product_id = find.product_id;
 
         setData(data);
 
-        post(route('item.delete', data), {preserveScroll: true});
+        post(route('item.delete', data), { preserveScroll: true, only: ['items'] });
 
         let index = items.findIndex((obj) => obj.id === find.id)
         let arr = [...items];
@@ -60,6 +74,10 @@ export function PrimaryShoppingCart({ }) {
 
     const handleCheckout = (e) => {
         e.preventDefault();
+        items.length < 1 ? setModalState(true) : '';
+        Inertia.visit('/checkout', {
+
+        });
     }
 
     return <>
@@ -80,7 +98,7 @@ export function PrimaryShoppingCart({ }) {
                     </li>
 
                     <hr />
-                    
+
                     {_.isEmpty(display) ? (
                         <p className="text-white text-center">There is nothing in your cart.</p>
                     ) : (

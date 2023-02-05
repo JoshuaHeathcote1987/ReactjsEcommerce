@@ -23,7 +23,8 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $data = Item::all();
+        $cart = Cart::where('id', '=', Auth::user()->id)->first();
+        $data = Item::where('cart_id', '=', $cart->id)->get();
         return $data;
     }
 

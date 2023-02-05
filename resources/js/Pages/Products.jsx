@@ -16,21 +16,37 @@ export default function Products(props) {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/cart')
-            .then(response => response.json())
-            .then(data => setCart(data))
-            .catch(error => console.log(error));
-
-        fetch('http://127.0.0.1:8000/item')
-            .then(response => response.json())
-            .then(data => setItems(data))
-            .catch(error => console.log(error));
-
-        fetch('http://127.0.0.1:8000/product')
-            .then(response => response.json())
-            .then(data => setProducts(data))
-            .catch(error => console.log(error));
+        getCart();
+        getItem();
+        getProducts();
     }, []);
+
+    async function getCart() {
+        try {
+            const response = await axios.get('/cart');
+            setCart(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getItem() {
+        try {
+            const response = await axios.get('/item');
+            setItems(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getProducts() {
+        try {
+            const response = await axios.get('/product');
+            setProducts(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     return (
         <AuthenticatedLayout
@@ -39,9 +55,9 @@ export default function Products(props) {
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>}
         >
             <Head title="Products" />
-            <ProductContext.Provider value={[products]}>
+            <CartContext.Provider value={[cart, setCart]}>
                 <ItemContext.Provider value={[items, setItems]}>
-                    <CartContext.Provider value={[cart, setCart]}>
+                    <ProductContext.Provider value={[products]}>
                         <div className="flex flex-row h-full">
                             <div className="w-full">
                                 <ShowProducts />
@@ -50,9 +66,9 @@ export default function Products(props) {
                                 <PrimaryShoppingCart />
                             </div>
                         </div>
-                    </CartContext.Provider>
+                    </ProductContext.Provider>
                 </ItemContext.Provider>
-            </ProductContext.Provider>
+            </CartContext.Provider>
         </AuthenticatedLayout>
     );
 }

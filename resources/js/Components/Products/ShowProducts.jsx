@@ -17,7 +17,7 @@ export function ShowProducts({ }) {
 
     function handleAddProductToCart(product) {
         let objFound = items.find(object => object.product_id === product.id);
-        
+
         if (objFound === undefined) {
             let obj = {
                 id: items.length + 1,
@@ -25,12 +25,11 @@ export function ShowProducts({ }) {
                 product_id: product.id,
                 amount: 1
             }
-            
+
             let arr = [...items, obj]
             setItems(arr);
         }
-        else
-        {
+        else {
             let arr = [...items];
             let arrFound = arr.find(object => object.id === objFound.id);
             arrFound.amount++;
@@ -82,9 +81,9 @@ export function ShowProducts({ }) {
             {products && products.filter(item => {
                 return Object.keys(item).some(key => item.name.toLowerCase().includes(search.toLowerCase()))
             })
-                .map((item, index) => (
-                    <ShowProduct key={index} item={item} handleAddToCart={handleAddProductToCart} />
-                ))}
+            .map((item, index) => (
+                <ShowProduct key={index} item={item} handleAddToCart={handleAddProductToCart} />
+            ))}
         </div>
     </>;
 }

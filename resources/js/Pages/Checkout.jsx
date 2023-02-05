@@ -1,15 +1,16 @@
 import { CheckoutCart } from '../Components/Checkout/CheckoutCart';
 import { PaymentDetails } from '../Components/Checkout/PaymentDetails';
 import { BillingAddress } from '../Components/Checkout/BillingAddress';
-import { useState } from 'react';
-import { Head, Link, useForm } from '@inertiajs/inertia-react';
+import { useEffect, useState } from 'react';
+import { Head } from '@inertiajs/inertia-react';
+
+import { CartContext } from '../Components/Context/CartContext';
+import { ItemContext } from '../Components/Context/ItemContext';
+import { ProductContext } from '../Components/Context/ProductContext';
+
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import TextInput from '../Components/TextInput'
-import InputLabel from '../Components/InputLabel'
 
 export default function Checkout(props) {
-
-    const [cart, setCart] = useState(props.items);
 
     const languages = [
         { id: 'Afrikaans', name: 'Afrikaans' },
@@ -77,6 +78,27 @@ export default function Checkout(props) {
         { id: 'Xhosa', name: 'Xhosa' },
     ];
 
+    const [cart, setCart] = useState([]);
+    const [items, setItems] = useState([]);
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        fetch('http://127.0.0.1:8000/cart')
+            .then(response => response.json())
+            .then(data => setCart(data))
+            .catch(error => console.log(error));
+
+        fetch('http://127.0.0.1:8000/item')
+            .then(response => response.json())
+            .then(data => setItems(data))
+            .catch(error => console.log(error));
+
+        fetch('http://127.0.0.1:8000/product')
+            .then(response => response.json())
+            .then(data => setProducts(data))
+            .catch(error => console.log(error));
+    }, []);
+
     return (
         <AuthenticatedLayout
             auth={props.auth}
@@ -85,19 +107,25 @@ export default function Checkout(props) {
         >
             <Head title="Checkout" />
 
-            <div className="flex flex-row mx-auto w-100 md:w-5/6 lg:w-4/6">
-                <div className="flex-auto w-64 m-6">
-                    <BillingAddress     />
-                    <PaymentDetails     />
-                </div>
-                <div className="flex-auto w-32 m-6">
-                    <CheckoutCart   cart={cart}  />
-                </div>
-            </div>
-
-
-
-
+            <ProductContext.Provider value={[products]}>
+                <ItemContext.Provider value={[items, setItems]}>
+                    <CartContext.Provider value={[cart, setCart]}>
+                        <div className="py-6">
+                            <div className="max-w-7xl mx-auto">
+                                <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                                    <div className="col-span-4">
+                                        <BillingAddress />
+                                        <PaymentDetails />
+                                    </div>
+                                    <div className="col-span-2">
+                                        <CheckoutCart />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </CartContext.Provider>
+                </ItemContext.Provider>
+            </ProductContext.Provider>
         </AuthenticatedLayout>
     );
 }

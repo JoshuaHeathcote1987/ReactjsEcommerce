@@ -14,7 +14,7 @@ export function ShowProduct({ item, handleAddToCart }) {
         handleAddToCart(item)
         data.id = item.id;
         setShow(false);
-        post(route('item.store'), {preserveScroll: true});
+        post(route('item.store'), {preserveScroll: true, only: ['items']});
     }
 
     const [show, setShow] = useState(false);

@@ -20,7 +20,8 @@ class CheckoutController extends Controller
      */
     public function index()
     {
-        //
+        
+        return Inertia::render('Checkout');
     }
 
     /**
@@ -46,7 +47,7 @@ class CheckoutController extends Controller
         foreach ($request->request as $item) {
             array_push($items, $item);
         }
-        
+
         return Inertia::render('Checkout', ['items' => $items]);
     }
 
